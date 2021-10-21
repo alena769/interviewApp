@@ -1,4 +1,4 @@
-package com.example.demo.services;
+package com.example.demo.services.email;
 
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
