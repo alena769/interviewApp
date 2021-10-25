@@ -7,7 +7,7 @@ import lombok.ToString;
 @Getter
 @AllArgsConstructor
 @ToString
-public class AppUserRegistrationRequest {
+public class AppUserRegistrationR {
 
     private final String firstName;
     private final String lastName;

@@ -8,7 +8,6 @@ import com.example.demo.models.AppUser.AppUserDTO;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.example.demo.repositories.AppUser.AppUserRepository;
 
 import java.util.Collections;
@@ -16,7 +15,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 @Slf4j
 public class AppUserServiceImpl implements AppUserService {
 
@@ -27,12 +25,22 @@ public class AppUserServiceImpl implements AppUserService {
     private final AppUserConverter appUserConverter;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+
     public AppUser findByEmail(String email) {
         log.info("fetching user by email {}", email);
 
        return appUserRepository.findByEmail(email)
                .orElseThrow(()-> new UsernameNotFoundException(String.format(USER_NOT_FOUND, email)));
+    }
 
+    @Override
+    public List<AppUserDTO> convertAppUsersToDTO(List<AppUser> appUserList) {
+        return appUserConverter.listOfUsersToDTO(appUserList);
+    }
+
+    @Override
+    public AppUserDTO convertAppUserToDTO(AppUser appUser) {
+        return appUserConverter.userToDTO(appUser);
     }
 
     @Override
@@ -47,14 +55,15 @@ public class AppUserServiceImpl implements AppUserService {
            String encodedPass = bCryptPasswordEncoder.encode(appUser.getPassword());
            appUser.setPassword(encodedPass);
            appUserRepository.save(appUser);
+
         }
-        return null; //TODO send email
+        return null;
     }
 
     @Override
     public void updateAppUser(AppUser appUser) {
 
-            AppUser appUserToUpdate = findUserById(appUser);
+            AppUser appUserToUpdate = findUserById(appUser.getId());
             if(appUserToUpdate != null) {
                 log.info("updating user {}", appUser.getFirstName());
                 appUserToUpdate.setFirstName(appUser.getFirstName());
@@ -69,7 +78,7 @@ public class AppUserServiceImpl implements AppUserService {
     @Override
     public void deleteAppUser(AppUser appUser) {
 
-        if(findUserById(appUser) != null) {
+        if(findUserById(appUser.getId()) != null) {
             log.info("deleting user {}", appUser.getFirstName());
             appUserRepository.deleteById(appUser.getId());
         }else throw new UsernameNotFoundException(String.format(USER_NOT_FOUND, appUser.getId()));
@@ -100,16 +109,22 @@ public class AppUserServiceImpl implements AppUserService {
         return appUserRepository.listAllAppUsers();
     }
 
+
     @Override
-    public List<AppUserDTO> convertUsersToUsersDTO() {
-        return appUserConverter.listOfUsersToDTO(appUserRepository.listAllAppUsers());
+    public List<AppUser> findByKeyword(String keyword) {
+        return appUserRepository.findByKeyword(keyword);
     }
 
-    public AppUser findUserById(AppUser appUser) {
-        log.info("fetching user {} by id", appUser.getFirstName());
+    public AppUser findUserById(Long id) {
+        log.info("fetching user by id");
 
-        return appUserRepository.findById(appUser.getId())
-                .orElseThrow(()-> new UsernameNotFoundException(String.format(USER_NOT_FOUND, appUser.getId())));
+        return appUserRepository.findById(id)
+                .orElseThrow(()-> new UsernameNotFoundException(String.format(USER_NOT_FOUND, id)));
+    }
+
+    @Override
+    public List<AppUser> findByIsActive(Boolean isActive) {
+        return appUserRepository.findAllByIsActive(isActive);
     }
 
 }

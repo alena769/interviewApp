@@ -1,7 +1,7 @@
 package com.example.demo.controllers;
 
 import lombok.AllArgsConstructor;
-import com.example.demo.models.AppUser.AppUserRegistrationRequest;
+import com.example.demo.models.AppUser.AppUserRegistrationR;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +17,7 @@ public class AppUserRegistrationController {
     private final AppUserRegistrationService userRegistrationService;
 
     @PostMapping
-    public String register(@RequestBody AppUserRegistrationRequest request) {
+    public String register(@RequestBody AppUserRegistrationR request) {
 
         return userRegistrationService.register(request);
     }

@@ -15,22 +15,23 @@ public interface AppUserRepository extends JpaRepository<AppUser, Long> {
 
     Optional<AppUser> findById(Long id);
 
-    @Query("from AppUser where email LIKE %:email%")
+    @Query(value = "from AppUser where email LIKE %:email%", nativeQuery = true)
     Optional<AppUser> findByEmail(@Param("email") String email); // podle mailu
 
-    @Query("from AppUser") // seznam useru
     List<AppUser> listAllAppUsers();
 
-    @Query("FROM AppUser where firstName LIKE %:firstName%") // najit podle jmena
-    List<AppUser> findAllByFirstName(@Param("firstName") String firstName);
+    @Query(value = "select AppUser from AppUser a where a.firstName like %:keyword% or a.lastName like %:keyword%", nativeQuery = true) //TODO dohledat jak je to spravne 
+    List<AppUser> findByKeyword(@Param("keyword") String keyword);
 
-    @Query("from AppUser where lastName LIKE %:lastName%")
-    List<AppUser> findAllByLastName(@Param("lastName") String lastName); // najit podle prijmeni
+//    @Query("FROM AppUser where firstName LIKE %:firstName%") // najit podle jmena
+//    List<AppUser> findAllByFirstName(@Param("firstName") String firstName);
+//
+//    @Query("from AppUser where lastName LIKE %:lastName%")
+//    List<AppUser> findAllByLastName(@Param("lastName") String lastName); // najit podle prijmeni
 
-    List<AppUser> findAllById(Long id); // najit podle id
+    AppUser findAllById(Long id); // najit podle id
 
-    List<AppUser> findAllByIsActive(Boolean isActive); // TODO ohlidat si logiku, jestli nezmenit na string
-                                                        // najit podle aktivovano/deaktivovano
+    List<AppUser> findAllByIsActive(Boolean isActive);
 
     //@Query("select AppUser from AppUser group by AppUser.firstName, AppUser.lastName order by AppUser.dateCreated asc")
     // najit a seradit podle data vytvoreni; nemuzu najit reseni na problem s query ... tak to mam v UserServiceImpl

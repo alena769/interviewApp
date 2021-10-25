@@ -14,6 +14,12 @@ public interface AppUserService {
     List<AppUser> orderAppUsersByDateAsc();
     List<AppUser> orderAppUsersByDateDesc();
     List<AppUser> findAllUsers();
-    List<AppUserDTO> convertUsersToUsersDTO();
+    List<AppUser> findByKeyword(String keyword);
+    AppUser findByEmail(String email);
+    List<AppUserDTO> convertAppUsersToDTO(List<AppUser> appUserList);
+    AppUserDTO convertAppUserToDTO(AppUser appUser);
+    AppUser findUserById(Long id);
+    List<AppUser> findByIsActive(Boolean isActive);
+
 
 }

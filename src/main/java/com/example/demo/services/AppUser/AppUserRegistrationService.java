@@ -1,7 +1,7 @@
 package com.example.demo.services.AppUser;
 
 import com.example.demo.models.AppUser.AppUser;
-import com.example.demo.models.AppUser.AppUserRegistrationRequest;
+import com.example.demo.models.AppUser.AppUserRegistrationR;
 import java.util.List;
 
 import com.example.demo.services.email.EmailSender;
@@ -23,7 +23,7 @@ public class AppUserRegistrationService implements UserDetailsService {
     private final AppUserService appUserService;
     private final EmailSender emailSender;
 
-    public String register(AppUserRegistrationRequest request) {
+    public String register(AppUserRegistrationR request) {
         boolean isValidEmail = emailValidator.test(request.getEmail());
 
         if(!isValidEmail) {
@@ -43,11 +43,11 @@ public class AppUserRegistrationService implements UserDetailsService {
             );
         }
     }
-
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return new User("root",
                 "$2a$10$Lw6CEI7yNl.i1dVaUYJhO.pEgpQuQHP10eyYW8YbVC4gWpJvgt3ly",
                 List.of(new SimpleGrantedAuthority("ADMIN")));
     }
+
 }
